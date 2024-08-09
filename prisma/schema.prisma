@@ -28,10 +28,10 @@ model Figure {
   coordinates Unsupported("geometry(Point, 4326)")
   name String
   description String?
-  difficulty Int // @range(1,5) // TODO
+  difficulty Int
   author String?
   owner String?
-  setupDate DateTime @db.Timestamptz()
+  setupDate DateTime @db.Date()
   figureStatus FigureStatus @relation(fields: [figureStatusId], references: [id])
   figureStatusId Int
   figureType FigureType @relation(fields: [figureTypeId], references: [id])
@@ -46,10 +46,10 @@ model FigureHistory {
   coordinates Unsupported("geometry(Point, 4326)")
   name String
   description String?
-  difficulty Int // @range(1,5) // TODO
+  difficulty Int
   author String?
   owner String?
-  setupDate DateTime @db.Timestamptz()
+  setupDate DateTime @db.Date()
   figureStatus FigureStatus @relation(fields: [figureStatusId], references: [id])
   figureStatusId Int
   figureType FigureType @relation(fields: [figureTypeId], references: [id])

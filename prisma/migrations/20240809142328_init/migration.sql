@@ -29,7 +29,7 @@ CREATE TABLE "Figure" (
     "difficulty" INTEGER NOT NULL,
     "author" TEXT,
     "owner" TEXT,
-    "setupDate" TIMESTAMPTZ NOT NULL,
+    "setupDate" DATE NOT NULL,
     "figureStatusId" INTEGER NOT NULL,
     "figureTypeId" INTEGER NOT NULL,
 
@@ -46,7 +46,7 @@ CREATE TABLE "FigureHistory" (
     "difficulty" INTEGER NOT NULL,
     "author" TEXT,
     "owner" TEXT,
-    "setupDate" TIMESTAMPTZ NOT NULL,
+    "setupDate" DATE NOT NULL,
     "figureStatusId" INTEGER NOT NULL,
     "figureTypeId" INTEGER NOT NULL,
 
