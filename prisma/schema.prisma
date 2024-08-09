@@ -1,11 +1,88 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
+  binaryTargets = "native"
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model User {
+  id    Int     @id @default(autoincrement())
+  email String  @unique
+  username  String
+  password String
+  role Role @relation(fields: [roleId], references: [id])
+  roleId Int
+}
+
+model Role {
+  id Int @id @default(autoincrement())
+  name String
+  users User[]
+}
+
+model Figure {
+  id Int @id @default(autoincrement())
+  coordinates Unsupported("geometry(Point, 4326)")
+  name String
+  description String?
+  difficulty Int // @range(1,5) // TODO
+  author String?
+  owner String?
+  setupDate DateTime @db.Timestamptz()
+  figureStatus FigureStatus @relation(fields: [figureStatusId], references: [id])
+  figureStatusId Int
+  figureType FigureType @relation(fields: [figureTypeId], references: [id])
+  figureTypeId Int
+  figureHistories FigureHistory[]
+}
+
+model FigureHistory {
+  id Int @id @default(autoincrement())
+  figure Figure @relation(fields: [figureId], references: [id])
+  figureId Int
+  coordinates Unsupported("geometry(Point, 4326)")
+  name String
+  description String?
+  difficulty Int // @range(1,5) // TODO
+  author String?
+  owner String?
+  setupDate DateTime @db.Timestamptz()
+  figureStatus FigureStatus @relation(fields: [figureStatusId], references: [id])
+  figureStatusId Int
+  figureType FigureType @relation(fields: [figureTypeId], references: [id])
+  figureTypeId Int
+}
+
+model FigureUser {
+  userId Int
+  figureId Int
+  figureUserStatusId Int
+  figureUserStatus FigureUserStatus @relation(fields: [figureUserStatusId], references: [id])
+  date DateTime @db.Timestamptz()
+  comment String?
+
+  @@id([userId, figureId, figureUserStatusId])
+}
+
+model FigureType {
+  id Int @id @default(autoincrement())
+  name String
+  figures Figure[]
+  figureHistories FigureHistory[]
+}
+
+model FigureUserStatus {
+  id Int @id @default(autoincrement())
+  name String
+  figureUsers FigureUser[]
+}
+
+model FigureStatus {
+  id Int @id @default(autoincrement())
+  name String
+  figures Figure[]
+  figureHistories FigureHistory[]
 }

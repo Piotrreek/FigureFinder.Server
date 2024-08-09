@@ -1,17 +1,18 @@
 version: '3'
 
-services:
+services:   
   db:
-    image: postgres:latest
+    image: postgis/postgis:latest
+    container_name: db
     restart: always
-    ports:
-      - 5433:5432
     environment:
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_USER: postgres
-      POSTGRES_DB: app
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: user
+      POSTGRES_DB: FigureFinder
+    ports:
+      - 5432:5432
     volumes:
       - pgdata:/var/lib/postgresql/data 
- 
+
 volumes:
   pgdata:

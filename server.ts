@@ -1,9 +1,9 @@
-//import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import express, { Request, Response } from "express";
 import app from "./app/index";
 import UsersRouter from "./app/routes/users";
 
-//export const prisma = new PrismaClient();
+export const prisma = new PrismaClient();
 
 const port = process.env.PORT || "3000";
 
@@ -24,10 +24,10 @@ async function main() {
 
 main()
   .then(async () => {
-   // await prisma.$connect();
+    await prisma.$connect();
   })
   .catch(async (e) => {
     console.error(e);
-   // await prisma.$disconnect();
+    await prisma.$disconnect();
     process.exit(1);
   });
