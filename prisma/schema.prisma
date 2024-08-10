@@ -43,7 +43,7 @@ model Figure {
   difficulty      Int // @range(1-5) - difficulty level to find the figure 
   author          String? // the person who placed the figure
   owner           String? // the person who created the figure (or company)
-  setupDate       DateTime @db.Date() // the date when figure has beed placed or will be placed
+  setupDate       DateTime? @db.Date() // the date when figure has beed placed or will be placed
 
   // relations
   figureStatus    FigureStatus @relation(fields: [figureStatusId], references: [id])
@@ -70,7 +70,7 @@ model FigureHistory {
   difficulty      Int // @range(1-5) - difficulty level to find the figure 
   author          String? // the person who placed the figure
   owner           String? // the person who created the figure (or company)
-  setupDate       DateTime @db.Date() // the date when figure has beed placed or will be placed
+  setupDate       DateTime? @db.Date() // the date when figure has beed placed or will be placed
   validFrom       DateTime @db.Timestamp() // from when this entry was valid
   validTo         DateTime @db.Timestamp() // from when this entry was not valid
 
