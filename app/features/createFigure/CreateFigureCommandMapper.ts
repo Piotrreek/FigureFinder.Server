@@ -10,7 +10,7 @@ export class CreateFigureCommandMapper {
       object?.difficulty,
       object?.author,
       object?.owner,
-      new Date(object?.setupDate),
+      object?.setupDate,
       object?.figureStatusId,
       object?.figureTypeId
     );

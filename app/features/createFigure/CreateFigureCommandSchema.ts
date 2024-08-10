@@ -1,11 +1,10 @@
-import { date, number, object, Schema, string } from "yup";
+import { date, number, object, string } from "yup";
+import { FormSchema } from "../../../utils/FormSchema";
 import { CreateFigureCommand } from "./CreateFigureCommand";
 
-type SchemaObject = {
-  [key in keyof CreateFigureCommand]: Schema<any>;
-};
-
-export const CreateFigureRequestSchema = object().shape<SchemaObject>({
+export const CreateFigureRequestSchema = object().shape<
+  FormSchema<CreateFigureCommand>
+>({
   longitude: number().required().max(180).min(-180),
   latitude: number().required().max(90).min(-90),
   name: string().required(),

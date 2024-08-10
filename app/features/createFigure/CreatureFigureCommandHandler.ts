@@ -7,7 +7,9 @@ class CreateFigureCommandHandler
   implements ICommandHandler<CreateFigureCommand, number>
 {
   public handle = async (request: CreateFigureCommand): Promise<number> => {
-    await CreateFigureRequestSchema.validate(request, { abortEarly: false });
+    request = await CreateFigureRequestSchema.validate(request, {
+      abortEarly: false,
+    });
     const prisma = new PrismaClient();
     const figure = await prisma.figure.create({
       data: {
