@@ -8,7 +8,6 @@ const errorHandlingMiddleware = (
   res: Response,
   next: NextFunction
 ) => {
-  console.log(err);
   if (err instanceof ValidationError) {
     const validationErrors = transformYupErrorsIntoObject(err);
     res.status(400).json(validationErrors);

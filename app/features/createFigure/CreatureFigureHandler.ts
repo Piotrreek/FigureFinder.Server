@@ -1,7 +1,9 @@
 import { PrismaClient } from "@prisma/client";
-import { CreateFigureRequest } from "../models/requests/createFigure";
+import { CreateFigureRequest } from "./CreateFigureRequest";
+import { CreateFigureRequestSchema } from "./CreateFigureRequestSchema";
 
-const create = async (request: CreateFigureRequest): Promise<number> => {
+const handle = async (request: CreateFigureRequest) => {
+  await CreateFigureRequestSchema.validate(request, { abortEarly: false });
   const prisma = new PrismaClient();
   const figure = await prisma.figure.create({
     data: {
@@ -21,4 +23,4 @@ const create = async (request: CreateFigureRequest): Promise<number> => {
   return figure.id;
 };
 
-export default create;
+export default handle;

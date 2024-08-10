@@ -1,9 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import {
-  CreateFigureRequest,
-  createFigureRequestSchema,
-} from "../models/requests/createFigure";
-import create from "../services/figures";
+import handle from "../features/createFigure/CreatureFigureHandler";
 
 const createFigure = async (
   req: Request,
@@ -11,12 +7,7 @@ const createFigure = async (
   next: NextFunction
 ) => {
   try {
-    const request: CreateFigureRequest =
-      await createFigureRequestSchema.validate(req.body, {
-        abortEarly: false,
-      });
-
-    const id = await create(request);
+    const id = await handle(req.body);
     res.status(201).json({ id: id });
   } catch (err: unknown) {
     next(err);
