@@ -1,15 +1,18 @@
-import express, { Request, Response } from "express";
-import UsersRouter from "./routes/users";
+import express from "express";
+import errorHandlingMiddleware from "./middleware/error";
+import notFoundMiddleware from "./middleware/notFound";
 import FiguresRouter from "./routes/figures";
+import UsersRouter from "./routes/users";
 
 const app = express();
-app.use(express.json());
 
 app.use("/api/users", UsersRouter);
 app.use("/api/figures", FiguresRouter);
 
-app.all("*", (req: Request, res: Response) => {
-  res.status(404).json({ error: `Route ${req.originalUrl} not found` });
-});
+// Not found middleware
+app.use(notFoundMiddleware);
+
+// Error handling middleware
+app.use(errorHandlingMiddleware);
 
 export default app;

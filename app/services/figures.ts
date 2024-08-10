@@ -3,28 +3,22 @@ import { CreateFigureRequest } from "../models/requests/createFigure";
 
 const create = async (request: CreateFigureRequest): Promise<number> => {
   const prisma = new PrismaClient();
-  const coordinates = `POINT(${request.longitude} ${request.latitude})`;
-  const response = (await prisma.$queryRaw`
-    INSERT INTO "Figure" (name, description, difficulty, author, owner, "setupDate", "figureStatusId", "figureTypeId", coordinates)
-    VALUES (
-      ${request.name},
-      ${request.description},
-      ${request.difficulty}, 
-      ${request.author}, 
-      ${request.owner},
-        TO_DATE(${request.setupDate.toISOString().slice(0, 10)}, 'YYYY-MM-DD'),
-      ${request.figureStatusId},
-      ${request.figureTypeId}, 
-        ST_GeomFromText(${coordinates})
-    )
-    RETURNING id
-    `) as CreateFigureDatabaseResponse[];
+  const figure = await prisma.figure.create({
+    data: {
+      name: request.name,
+      description: request.description,
+      difficulty: request.difficulty,
+      author: request.author,
+      owner: request.owner,
+      latitude: request.latitude,
+      longitude: request.longitude,
+      figureStatusId: request.figureStatusId,
+      figureTypeId: request.figureTypeId,
+      setupDate: request.setupDate.toISOString(),
+    },
+  });
 
-  return response[0].id;
+  return figure.id;
 };
-
-interface CreateFigureDatabaseResponse {
-  id: number;
-}
 
 export default create;

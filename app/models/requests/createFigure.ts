@@ -5,7 +5,7 @@ export const createFigureRequestSchema = object({
   latitude: number().required().max(90).min(-90),
   name: string().required(),
   description: string().optional(),
-  difficulty: number().integer().min(1).max(5),
+  difficulty: number().integer().min(1).max(5).required(),
   author: string().optional(),
   owner: string().optional(),
   setupDate: date().required(),

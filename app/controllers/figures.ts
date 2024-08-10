@@ -1,13 +1,15 @@
-import { Request, Response } from "express";
-import create from "../services/figures";
+import { NextFunction, Request, Response } from "express";
 import {
   CreateFigureRequest,
   createFigureRequestSchema,
 } from "../models/requests/createFigure";
-import { ValidationError } from "yup";
-import { transformYupErrorsIntoObject } from "../../utils/transformYupErrorsIntoObject";
+import create from "../services/figures";
 
-const createFigure = async (req: Request, res: Response) => {
+const createFigure = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const request: CreateFigureRequest =
       await createFigureRequestSchema.validate(req.body, {
@@ -15,16 +17,9 @@ const createFigure = async (req: Request, res: Response) => {
       });
 
     const id = await create(request);
-
     res.status(201).json({ id: id });
-  } catch (error: any) {
-    if (error instanceof ValidationError) {
-      const validationErrors = transformYupErrorsIntoObject(error);
-      res.status(400).json(validationErrors);
-      return;
-    }
-
-    res.status(500).send("Something went wrong");
+  } catch (err: unknown) {
+    next(err);
   }
 };
 
