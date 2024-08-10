@@ -9,80 +9,125 @@ datasource db {
 }
 
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  username  String
-  password String
-  role Role @relation(fields: [roleId], references: [id])
-  roleId Int
-}
+  id              Int     @id @default(autoincrement()) // identifier of the user
+  email           String  @unique // unique email address of the user
+  username        String // nickname of the user
+  password        String // password of the user (hashed)
+  blocked         Boolean // the flag indicating whether user is blocked
 
-model Role {
-  id Int @id @default(autoincrement())
-  name String
-  users User[]
-}
+  // relations
+  role            Role @relation(fields: [roleId], references: [id])
+  roleId          Int
 
-model Figure {
-  id Int @id @default(autoincrement())
-  coordinates Unsupported("geometry(Point, 4326)")
-  name String
-  description String?
-  difficulty Int
-  author String?
-  owner String?
-  setupDate DateTime @db.Date()
-  figureStatus FigureStatus @relation(fields: [figureStatusId], references: [id])
-  figureStatusId Int
-  figureType FigureType @relation(fields: [figureTypeId], references: [id])
-  figureTypeId Int
+  figureUsers     FigureUser[]
+  figures         Figure[]
   figureHistories FigureHistory[]
 }
 
-model FigureHistory {
-  id Int @id @default(autoincrement())
-  figure Figure @relation(fields: [figureId], references: [id])
-  figureId Int
-  coordinates Unsupported("geometry(Point, 4326)")
-  name String
-  description String?
-  difficulty Int
-  author String?
-  owner String?
-  setupDate DateTime @db.Date()
-  figureStatus FigureStatus @relation(fields: [figureStatusId], references: [id])
-  figureStatusId Int
-  figureType FigureType @relation(fields: [figureTypeId], references: [id])
-  figureTypeId Int
+// user roles
+model Role {
+  id              Int @id @default(autoincrement()) // identifier of role
+  name            String // name of the role
+
+  // relations
+  users           User[]
 }
 
-model FigureUser {
-  userId Int
-  figureId Int
-  figureUserStatusId Int
-  figureUserStatus FigureUserStatus @relation(fields: [figureUserStatusId], references: [id])
-  date DateTime @db.Timestamptz()
-  comment String?
+// table that is responsible for holding all figures
+model Figure {
+  id              Int @id @default(autoincrement()) // identifier of figure
+  latitude        Decimal @db.Decimal(5,3) // part of coordinates
+  longitude       Decimal @db.Decimal(6,3) // part of coordinates
+  name            String // name of the figure
+  description     String? // description of the figure
+  difficulty      Int // @range(1-5) - difficulty level to find the figure 
+  author          String? // the person who placed the figure
+  owner           String? // the person who created the figure (or company)
+  setupDate       DateTime @db.Date() // the date when figure has beed placed or will be placed
 
-  @@id([userId, figureId, figureUserStatusId])
+  // relations
+  figureStatus    FigureStatus @relation(fields: [figureStatusId], references: [id])
+  figureStatusId  Int
+
+  figureType      FigureType @relation(fields: [figureTypeId], references: [id])
+  figureTypeId    Int
+
+  createdBy       User? @relation(fields: [createdById], references: [id])
+  createdById     Int?
+
+  figureHistories FigureHistory[]
+  figureUsers     FigureUser[]
+}
+
+// table responsible for holding history of figure changes
+// it allows to revert some unwanted changes to previous state
+model FigureHistory {
+  id              Int @id @default(autoincrement()) // identifier of figure history entry
+  latitude        Decimal @db.Decimal(5,3) // part of coordinates
+  longitude       Decimal @db.Decimal(6,3) // part of coordinates
+  name            String // name of the figure
+  description     String? // description of the figure
+  difficulty      Int // @range(1-5) - difficulty level to find the figure 
+  author          String? // the person who placed the figure
+  owner           String? // the person who created the figure (or company)
+  setupDate       DateTime @db.Date() // the date when figure has beed placed or will be placed
+  validFrom       DateTime @db.Timestamp() // from when this entry was valid
+  validTo         DateTime @db.Timestamp() // from when this entry was not valid
+
+  // relations
+  figure          Figure @relation(fields: [figureId], references: [id])
+  figureId        Int
+
+  figureStatus    FigureStatus @relation(fields: [figureStatusId], references: [id])
+  figureStatusId  Int
+  
+  changedBy User? @relation(fields: [changedById], references: [id])
+  changedById Int?
+
+  figureType      FigureType @relation(fields: [figureTypeId], references: [id])
+  figureTypeId    Int
+}
+
+// table that is responsible for holding user entries when they visited the figure and would like to add a comment or status whether figure was there or not
+model FigureUser {
+  date            DateTime @db.Date() // date entry when someone visited the figure
+  comment         String? // optional comment about the figure
+
+  // relations
+  userId              Int
+  user                User @relation(fields: [userId], references: [id])
+
+  figureId            Int
+  figure              Figure @relation(fields: [figureId], references: [id])
+
+  figureUserStatusId  Int
+  figureUserStatus    FigureUserStatus @relation(fields: [figureUserStatusId], references: [id])
+
+  @@id([userId, figureId, figureUserStatusId]) // identifier of the entry
 }
 
 model FigureType {
-  id Int @id @default(autoincrement())
-  name String
-  figures Figure[]
+  id              Int @id @default(autoincrement()) // identifier of the figure type
+  name            String // name of the figure type
+
+  // relations
+  figures         Figure[]
   figureHistories FigureHistory[]
 }
 
 model FigureUserStatus {
-  id Int @id @default(autoincrement())
-  name String
-  figureUsers FigureUser[]
+  id              Int @id @default(autoincrement())
+  name            String // name of the figure user status
+
+  // relations
+  figureUsers     FigureUser[]
 }
 
 model FigureStatus {
-  id Int @id @default(autoincrement())
-  name String
-  figures Figure[]
+  id              Int @id @default(autoincrement())
+  name            String // name of the figure status
+
+  // relations
+  figures         Figure[]
   figureHistories FigureHistory[]
 }

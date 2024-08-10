@@ -7,6 +7,7 @@ CREATE TABLE "User" (
     "email" TEXT NOT NULL,
     "username" TEXT NOT NULL,
     "password" TEXT NOT NULL,
+    "blocked" BOOLEAN NOT NULL,
     "roleId" INTEGER NOT NULL,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
@@ -23,7 +24,8 @@ CREATE TABLE "Role" (
 -- CreateTable
 CREATE TABLE "Figure" (
     "id" SERIAL NOT NULL,
-    "coordinates" geometry(Point, 4326) NOT NULL,
+    "latitude" DECIMAL(5,3) NOT NULL,
+    "longitude" DECIMAL(6,3) NOT NULL,
     "name" TEXT NOT NULL,
     "description" TEXT,
     "difficulty" INTEGER NOT NULL,
@@ -32,6 +34,7 @@ CREATE TABLE "Figure" (
     "setupDate" DATE NOT NULL,
     "figureStatusId" INTEGER NOT NULL,
     "figureTypeId" INTEGER NOT NULL,
+    "createdById" INTEGER,
 
     CONSTRAINT "Figure_pkey" PRIMARY KEY ("id")
 );
@@ -39,15 +42,19 @@ CREATE TABLE "Figure" (
 -- CreateTable
 CREATE TABLE "FigureHistory" (
     "id" SERIAL NOT NULL,
-    "figureId" INTEGER NOT NULL,
-    "coordinates" geometry(Point, 4326) NOT NULL,
+    "latitude" DECIMAL(5,3) NOT NULL,
+    "longitude" DECIMAL(6,3) NOT NULL,
     "name" TEXT NOT NULL,
     "description" TEXT,
     "difficulty" INTEGER NOT NULL,
     "author" TEXT,
     "owner" TEXT,
     "setupDate" DATE NOT NULL,
+    "validFrom" TIMESTAMP NOT NULL,
+    "validTo" TIMESTAMP NOT NULL,
+    "figureId" INTEGER NOT NULL,
     "figureStatusId" INTEGER NOT NULL,
+    "changedById" INTEGER,
     "figureTypeId" INTEGER NOT NULL,
 
     CONSTRAINT "FigureHistory_pkey" PRIMARY KEY ("id")
@@ -55,11 +62,11 @@ CREATE TABLE "FigureHistory" (
 
 -- CreateTable
 CREATE TABLE "FigureUser" (
+    "date" DATE NOT NULL,
+    "comment" TEXT,
     "userId" INTEGER NOT NULL,
     "figureId" INTEGER NOT NULL,
     "figureUserStatusId" INTEGER NOT NULL,
-    "date" TIMESTAMPTZ NOT NULL,
-    "comment" TEXT,
 
     CONSTRAINT "FigureUser_pkey" PRIMARY KEY ("userId","figureId","figureUserStatusId")
 );
@@ -101,13 +108,25 @@ ALTER TABLE "Figure" ADD CONSTRAINT "Figure_figureStatusId_fkey" FOREIGN KEY ("f
 ALTER TABLE "Figure" ADD CONSTRAINT "Figure_figureTypeId_fkey" FOREIGN KEY ("figureTypeId") REFERENCES "FigureType"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "Figure" ADD CONSTRAINT "Figure_createdById_fkey" FOREIGN KEY ("createdById") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "FigureHistory" ADD CONSTRAINT "FigureHistory_figureId_fkey" FOREIGN KEY ("figureId") REFERENCES "Figure"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "FigureHistory" ADD CONSTRAINT "FigureHistory_figureStatusId_fkey" FOREIGN KEY ("figureStatusId") REFERENCES "FigureStatus"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "FigureHistory" ADD CONSTRAINT "FigureHistory_changedById_fkey" FOREIGN KEY ("changedById") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "FigureHistory" ADD CONSTRAINT "FigureHistory_figureTypeId_fkey" FOREIGN KEY ("figureTypeId") REFERENCES "FigureType"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "FigureUser" ADD CONSTRAINT "FigureUser_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "FigureUser" ADD CONSTRAINT "FigureUser_figureId_fkey" FOREIGN KEY ("figureId") REFERENCES "Figure"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "FigureUser" ADD CONSTRAINT "FigureUser_figureUserStatusId_fkey" FOREIGN KEY ("figureUserStatusId") REFERENCES "FigureUserStatus"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
