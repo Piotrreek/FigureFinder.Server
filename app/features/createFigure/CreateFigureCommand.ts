@@ -32,7 +32,7 @@ export class CreateFigureCommand implements ICommand<number> {
   difficulty: number;
   author?: string;
   owner?: string;
-  setupDate: Date;
+  setupDate?: Date;
   figureStatusId: number;
   figureTypeId: number;
 }

@@ -12,7 +12,7 @@ export const CreateFigureRequestSchema = object().shape<
   difficulty: number().integer().min(1).max(5).required(),
   author: string().optional(),
   owner: string().optional(),
-  setupDate: date().required(),
+  setupDate: date().optional(),
   figureStatusId: number().required().integer().positive(),
   figureTypeId: number().required().integer().positive(),
 });
