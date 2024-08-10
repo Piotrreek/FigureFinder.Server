@@ -22,7 +22,7 @@ class CreateFigureCommandHandler
         longitude: request.longitude,
         figureStatusId: request.figureStatusId,
         figureTypeId: request.figureTypeId,
-        setupDate: request.setupDate.toISOString(),
+        setupDate: request.setupDate?.toISOString(),
       },
     });
 
