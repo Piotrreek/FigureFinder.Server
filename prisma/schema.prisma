@@ -11,7 +11,7 @@ datasource db {
 model User {
   id              Int     @id @default(autoincrement()) // identifier of the user
   email           String  @unique // unique email address of the user
-  username        String // nickname of the user
+  username        String  @unique // unique nickname of the user
   password        String // password of the user (hashed)
   blocked         Boolean @default(false) // the flag indicating whether user is blocked
   emailConfirmed  Boolean @default(false) // the flag indicating whether user has confirmed email
