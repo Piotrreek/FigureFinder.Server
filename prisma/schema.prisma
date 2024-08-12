@@ -13,7 +13,8 @@ model User {
   email           String  @unique // unique email address of the user
   username        String // nickname of the user
   password        String // password of the user (hashed)
-  blocked         Boolean // the flag indicating whether user is blocked
+  blocked         Boolean @default(false) // the flag indicating whether user is blocked
+  emailConfirmed  Boolean @default(false) // the flag indicating whether user has confirmed email
 
   // relations
   role            Role @relation(fields: [roleId], references: [id])
