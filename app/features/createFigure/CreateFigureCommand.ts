@@ -1,6 +1,17 @@
 import { ICommand } from "../../abstractions/ICommand";
 
 export class CreateFigureCommand implements ICommand<number> {
+  longitude: number;
+  latitude: number;
+  name: string;
+  description?: string;
+  difficulty: number;
+  author?: string;
+  owner?: string;
+  setupDate?: Date;
+  figureStatusId: number;
+  figureTypeId: number;
+
   constructor(
     longitude: number,
     latitude: number,
@@ -24,15 +35,4 @@ export class CreateFigureCommand implements ICommand<number> {
     this.figureStatusId = figureStatusId;
     this.figureTypeId = figureTypeId;
   }
-
-  longitude: number;
-  latitude: number;
-  name: string;
-  description?: string;
-  difficulty: number;
-  author?: string;
-  owner?: string;
-  setupDate?: Date;
-  figureStatusId: number;
-  figureTypeId: number;
 }
