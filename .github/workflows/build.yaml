@@ -48,7 +48,7 @@ jobs:
           chmod +x /usr/local/bin/docker-compose
 
       - name: "Start Database Container"
-        run: "docker-compose -f 'docker-compose.yml' -d"
+        run: "docker-compose -f 'docker-compose.yml' up -d"
 
       - name: "Migrate database"
         run: "npx prisma migrate dev"
