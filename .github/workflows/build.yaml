@@ -50,13 +50,15 @@ jobs:
       - name: "Start Database Container"
         run: "docker-compose -f 'docker-compose.yml' up -d"
 
-      - name: "Test"
-        run: "docker ps -a"
+      - name: "Sleep for 15 second"
+        uses: GuillaumeFalourd/wait-sleep-action@v1
+        with:
+          time: "15"
 
       - name: "Migrate database"
         run: "npx prisma migrate dev"
         env:
-          DATABASE_URL: "postgresql://user:password@localhost:5434/FigureFinder"
+          DATABASE_URL: "postgresql://user:password@localhost:5432/FigureFinder"
 
       - name: "Stop database Container"
         run: "docker-compose -f 'docker-compose.yml' down"
