@@ -29,6 +29,12 @@ class SignInCommandHandler
       where: {
         email: request.email,
       },
+      select: {
+        role: true,
+        password: true,
+        id: true,
+        emailConfirmed: true,
+      },
     });
 
     if (!user) {
@@ -45,7 +51,8 @@ class SignInCommandHandler
 
     const accessToken = this.jwtService.generateAccessToken(
       user.id,
-      user.emailConfirmed
+      user.emailConfirmed,
+      user.role.name
     );
 
     return { accessToken: accessToken };

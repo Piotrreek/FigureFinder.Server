@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 export interface JwtPayload {
   userId: number;
   emailConfirmed: boolean;
+  role: string;
 }
 
 export class JwtService {
@@ -10,11 +11,13 @@ export class JwtService {
 
   public generateAccessToken = (
     userId: number,
-    emailConfirmed: boolean
+    emailConfirmed: boolean,
+    role: string
   ): string => {
     const payload: JwtPayload = {
       userId: userId,
       emailConfirmed: emailConfirmed,
+      role: role,
     };
 
     const token = jwt.sign(payload, this.key, {

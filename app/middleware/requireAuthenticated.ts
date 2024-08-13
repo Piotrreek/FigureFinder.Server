@@ -2,6 +2,10 @@ import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { JwtPayload } from "../services/jwtService";
 
+export interface AuthenticatedRequest extends Request {
+  user: JwtPayload;
+}
+
 const requireAuthenticatedUserMiddleware = (
   req: Request,
   res: Response,
@@ -20,7 +24,7 @@ const requireAuthenticatedUserMiddleware = (
       process.env.JWT_SECRET_KEY!
     ) as JwtPayload;
 
-    req.body = { ...req.body, userId: decoded.userId };
+    (req as AuthenticatedRequest).user = decoded;
 
     next();
   } catch (err) {

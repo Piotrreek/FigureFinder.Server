@@ -6,6 +6,12 @@ import { CreateFigureRequestSchema } from "./CreateFigureCommandSchema";
 class CreateFigureCommandHandler
   implements ICommandHandler<CreateFigureCommand, number>
 {
+  private userId?: number;
+
+  constructor(userId?: number) {
+    this.userId = userId;
+  }
+
   public handle = async (request: CreateFigureCommand): Promise<number> => {
     request = await CreateFigureRequestSchema.validate(request, {
       abortEarly: false,
@@ -23,7 +29,7 @@ class CreateFigureCommandHandler
         figureStatusId: request.figureStatusId,
         figureTypeId: request.figureTypeId,
         setupDate: request.setupDate?.toISOString(),
-        createdById: request.userId,
+        createdById: this.userId,
       },
     });
 

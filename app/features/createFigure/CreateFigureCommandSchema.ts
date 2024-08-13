@@ -15,5 +15,4 @@ export const CreateFigureRequestSchema = object().shape<
   setupDate: date().optional(),
   figureStatusId: number().required().integer().positive(),
   figureTypeId: number().required().integer().positive(),
-  userId: number().required().integer().positive(),
 });
