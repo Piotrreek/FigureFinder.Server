@@ -1,0 +1,64 @@
+name: "Install dependencies, build and migrate db"
+
+on:
+  push:
+    branches:
+      - feature/*
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  install_deps_and_build:
+    name: "Install Dependencies and Build"
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: "Checkout code"
+        uses: "actions/checkout@v3"
+
+      - name: "Use Node.js"
+        uses: "actions/setup-node@v4"
+        with:
+          node-version: "20.x"
+
+      - name: "Install Dependencies"
+        run: "npm install"
+
+      - name: "Build typescript"
+        run: "npm run build"
+
+  create_and_migrate_database:
+    name: "Create and Migrate Database"
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: "Checkout code"
+        uses: "actions/checkout@v3"
+
+      - name: "Use Node.js"
+        uses: "actions/setup-node@v4"
+        with:
+          node-version: "20.x"
+
+      - name: "Install Dependencies"
+        run: "npm install"
+
+      - name: "Install docker-compose if not exists"
+        run: |
+          curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          chmod +x /usr/local/bin/docker-compose
+
+      - name: "Start Database Container"
+        run: "docker-compose -f 'docker-compose.yml' up -d"
+
+      - name: "Sleep for 15 second"
+        uses: GuillaumeFalourd/wait-sleep-action@v1
+        with:
+          time: "15"
+
+      - name: "Migrate database"
+        run: "npx prisma migrate dev"
+        env:
+          DATABASE_URL: "postgresql://user:password@localhost:5432/FigureFinder"
+
+      - name: "Stop database Container"
+        run: "docker-compose -f 'docker-compose.yml' down"
