@@ -42,11 +42,18 @@ jobs:
       - name: "Install Dependecies"
         run: "npm install"
 
+      - name: "Install docker-compose if not exists"
+        run: |
+          curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          chmod +x /usr/local/bin/docker-compose
+
       - name: "Start Database Container"
         run: "docker-compose -f 'docker-compose.yml' -d"
 
       - name: "Migrate database"
         run: "npx prisma migrate dev"
+        env:
+          DATABASE_URL: "postgresql://user:password@localhost:5434/FigureFinder"
 
       - name: "Stop database Container"
         run: "docker-compose -f 'docker-compose.yml' down"
