@@ -4,6 +4,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon ./server.ts",
+    "build": "tsc",
     "start": "node -r ts-node/register ./server.ts",
     "start:prod": "npx prisma migrate deploy && npx prisma migrate status && node -r ts-node/register ./server.ts",
     "db:migrate:dev": "npx prisma migrate dev"
