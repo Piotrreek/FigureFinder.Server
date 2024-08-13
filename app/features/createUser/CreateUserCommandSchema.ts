@@ -19,6 +19,6 @@ export const CreateUserCommandSchema = object().shape<
     .required("Username is required"),
   password: string()
     .matches(noSpacesRegex, "Password cannot contain spaces")
-    .min(8, "Password must be at least 8 characters")
+    .min(7, "Password must be at least 7 characters")
     .required("Password is required"),
 });
