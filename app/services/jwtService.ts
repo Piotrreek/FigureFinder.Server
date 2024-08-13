@@ -1,5 +1,10 @@
 import jwt from "jsonwebtoken";
 
+export interface JwtPayload {
+  userId: number;
+  emailConfirmed: boolean;
+}
+
 export class JwtService {
   private key: string = process.env.JWT_SECRET_KEY!;
 
@@ -7,7 +12,7 @@ export class JwtService {
     userId: number,
     emailConfirmed: boolean
   ): string => {
-    const payload = {
+    const payload: JwtPayload = {
       userId: userId,
       emailConfirmed: emailConfirmed,
     };

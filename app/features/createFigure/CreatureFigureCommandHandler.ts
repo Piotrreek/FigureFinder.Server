@@ -23,6 +23,7 @@ class CreateFigureCommandHandler
         figureStatusId: request.figureStatusId,
         figureTypeId: request.figureTypeId,
         setupDate: request.setupDate?.toISOString(),
+        createdById: request.userId,
       },
     });
 

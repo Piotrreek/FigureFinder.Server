@@ -11,6 +11,7 @@ export class CreateFigureCommand implements ICommand<number> {
   setupDate?: Date;
   figureStatusId: number;
   figureTypeId: number;
+  userId: number;
 
   constructor(
     longitude: number,
@@ -22,7 +23,8 @@ export class CreateFigureCommand implements ICommand<number> {
     owner: string,
     setupDate: Date,
     figureStatusId: number,
-    figureTypeId: number
+    figureTypeId: number,
+    userId: number
   ) {
     this.latitude = latitude;
     this.longitude = longitude;
@@ -34,5 +36,6 @@ export class CreateFigureCommand implements ICommand<number> {
     this.setupDate = setupDate;
     this.figureStatusId = figureStatusId;
     this.figureTypeId = figureTypeId;
+    this.userId = userId;
   }
 }

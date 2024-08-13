@@ -12,7 +12,8 @@ export class CreateFigureCommandMapper {
       object?.owner,
       object?.setupDate,
       object?.figureStatusId,
-      object?.figureTypeId
+      object?.figureTypeId,
+      object?.userId
     );
   };
 }
