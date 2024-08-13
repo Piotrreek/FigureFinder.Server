@@ -1,4 +1,4 @@
-name: "Install dependecies, build and migrate db"
+name: "Install dependencies, build and migrate db"
 
 on:
   push:
@@ -21,7 +21,7 @@ jobs:
         with:
           node-version: "20.x"
 
-      - name: "Install Dependecies"
+      - name: "Install Dependencies"
         run: "npm install"
 
       - name: "Build typescript"
@@ -39,7 +39,7 @@ jobs:
         with:
           node-version: "20.x"
 
-      - name: "Install Dependecies"
+      - name: "Install Dependencies"
         run: "npm install"
 
       - name: "Install docker-compose if not exists"
