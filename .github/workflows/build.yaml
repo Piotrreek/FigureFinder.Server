@@ -50,6 +50,9 @@ jobs:
       - name: "Start Database Container"
         run: "docker-compose -f 'docker-compose.yml' up -d"
 
+      - name: "Test"
+        run: "docker ps -a"
+
       - name: "Migrate database"
         run: "npx prisma migrate dev"
         env:
