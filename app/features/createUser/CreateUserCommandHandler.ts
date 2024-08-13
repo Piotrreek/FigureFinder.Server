@@ -56,7 +56,7 @@ class CreateUserCommandHandler
         email: email,
       },
     });
-
+    
     return !!user;
   };
 
