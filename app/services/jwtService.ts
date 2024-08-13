@@ -1,4 +1,4 @@
-import Jwt from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 
 export class JwtService {
   private key: string = process.env.JWT_SECRET_KEY!;
@@ -12,7 +12,7 @@ export class JwtService {
       emailConfirmed: emailConfirmed,
     };
 
-    const token = Jwt.sign(payload, this.key, {
+    const token = jwt.sign(payload, this.key, {
       expiresIn: "6h",
     });
 
