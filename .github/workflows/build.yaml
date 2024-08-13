@@ -3,7 +3,10 @@ name: "Install dependecies, build and migrate db"
 on:
   push:
     branches:
-      - "*"
+      - feature/*
+  pull_request:
+    branches:
+      - main
 
 jobs:
   install_deps_and_build:
@@ -38,10 +41,10 @@ jobs:
 
       - name: "Install Dependecies"
         run: "npm install"
-      
+
       - name: "Start Database Container"
         run: "docker-compose -f 'docker-compose.yml' -d"
-      
+
       - name: "Migrate database"
         run: "npx prisma migrate dev"
 
