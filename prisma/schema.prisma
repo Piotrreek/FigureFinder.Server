@@ -28,7 +28,7 @@ model User {
 // user roles
 model Role {
   id              Int @id @default(autoincrement()) // identifier of role
-  name            String // name of the role
+  name            String @unique // name of the role
 
   // relations
   users           User[]
