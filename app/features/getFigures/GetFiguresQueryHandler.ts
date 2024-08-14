@@ -8,9 +8,11 @@ export class GetFiguresQueryHandler
   implements IQueryHandler<GetFiguresQuery, GetFiguresResponse>
 {
   prisma: PrismaClient;
+  userId?: number;
 
-  constructor() {
+  constructor(userId?: number) {
     this.prisma = new PrismaClient();
+    this.userId = userId;
   }
 
   public handle = async (
@@ -38,11 +40,24 @@ export class GetFiguresQueryHandler
         ST_DistanceSpheroid(
           ST_MakePoint(f.longitude, f.latitude),
           ST_MakePoint($1, $2)
-        ) AS distance
+        ) AS distance,
       `;
     } else {
-      sql += `NULL AS distance`;
+      sql += `NULL AS distance,`;
     }
+
+    // Add the subquery to check if the figure was found by the user
+    sql += `
+      EXISTS (
+        SELECT 1
+        FROM "FigureUser" fu
+        WHERE fu."figureId" = f.id
+          AND fu."userId" = ${this.userId ?? -1}
+          AND fu."figureUserStatusId" = (
+            SELECT id FROM "FigureUserStatus" WHERE name = 'Znaleziony'
+          )
+      ) AS found
+      `;
 
     // Complete the base SQL query
     sql += `
@@ -91,6 +106,7 @@ export class GetFiguresQueryHandler
         name: f.name,
         distance: f.distance,
         difficulty: f.difficulty,
+        found: f.found,
       })),
     };
   };
@@ -103,4 +119,5 @@ interface GetFiguresDatabaseResponse {
   name: string;
   difficulty: number;
   distance?: number;
+  found: boolean;
 }

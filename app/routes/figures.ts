@@ -1,5 +1,6 @@
 import express from "express";
 import FiguresController from "../controllers/figures";
+import attachUserPayloadMiddleware from "../middleware/attachUserPayload";
 import requireAuthenticatedUserMiddleware from "../middleware/requireAuthenticated";
 
 const router = express.Router();
@@ -11,6 +12,6 @@ router.post(
   FiguresController.createFigure
 );
 
-router.get("/", FiguresController.getFigures);
+router.get("/", attachUserPayloadMiddleware, FiguresController.getFigures);
 
 export default router;

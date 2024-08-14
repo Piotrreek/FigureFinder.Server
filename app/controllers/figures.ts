@@ -22,7 +22,8 @@ const createFigure = async (
 };
 
 const getFigures = async (req: Request, res: Response, next: NextFunction) => {
-  const handler = new GetFiguresQueryHandler();
+  const userId = (req as AuthenticatedRequest)?.user?.userId;
+  const handler = new GetFiguresQueryHandler(userId);
   try {
     const getFiguresQuery: GetFiguresQuery = {
       figureTypeId: req.query.figureTypeId

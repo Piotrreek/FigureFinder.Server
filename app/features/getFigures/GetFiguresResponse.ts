@@ -9,4 +9,5 @@ export interface Figure {
   name: string;
   difficulty: number;
   distance?: number;
+  found: boolean;
 }
