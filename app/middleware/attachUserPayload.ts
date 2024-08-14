@@ -28,7 +28,7 @@ const attachUserPayloadMiddleware = (
 
     next();
   } catch (err) {
-    res.status(401).send();
+    next(err);
   }
 };
 
