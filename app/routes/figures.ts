@@ -11,4 +11,6 @@ router.post(
   FiguresController.createFigure
 );
 
+router.get("/", FiguresController.getFigures);
+
 export default router;

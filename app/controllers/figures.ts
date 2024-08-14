@@ -1,6 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import { CreateFigureCommandMapper } from "../features/createFigure/CreateFigureCommandMapper";
 import CreateFigureCommandHandler from "../features/createFigure/CreatureFigureCommandHandler";
+import { GetFiguresQuery } from "../features/getFigures/GetFiguresQuery";
+import { GetFiguresQueryHandler } from "../features/getFigures/GetFiguresQueryHandler";
 import { AuthenticatedRequest } from "../middleware/requireAuthenticated";
 
 const createFigure = async (
@@ -19,6 +21,30 @@ const createFigure = async (
   }
 };
 
+const getFigures = async (req: Request, res: Response, next: NextFunction) => {
+  const handler = new GetFiguresQueryHandler();
+  try {
+    const getFiguresQuery: GetFiguresQuery = {
+      figureTypeId: req.query.figureTypeId
+        ? +req.query.figureTypeId
+        : undefined,
+      figureStatusId: req.query.figureStatusId
+        ? +req.query.figureStatusId
+        : undefined,
+      latitude: req.query.latitude ? +req.query.latitude : undefined,
+      longitude: req.query.longitude ? +req.query.longitude : undefined,
+      maxDistance: req.query.maxDistance ? +req.query.maxDistance : undefined,
+    };
+
+    const result = await handler.handle(getFiguresQuery);
+
+    res.status(200).json(result);
+  } catch (err: unknown) {
+    next(err);
+  }
+};
+
 export default {
   createFigure,
+  getFigures,
 };
