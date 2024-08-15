@@ -1,6 +1,6 @@
 import { date, number, object, string } from "yup";
 import { FormSchema } from "../../../utils/FormSchema";
-import { CreateFigureUserEntryCommand } from "./createFigureUserEntryCommand";
+import { CreateFigureUserEntryCommand } from "./CreateFigureUserEntryCommand";
 
 export const CreateFigureUserEntryCommandSchema = object().shape<
   FormSchema<CreateFigureUserEntryCommand>

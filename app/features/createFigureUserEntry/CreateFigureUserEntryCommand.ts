@@ -1,6 +1,6 @@
 import { ICommand } from "../../abstractions/ICommand";
 
-export class CreateFigureUserEntryCommand implements ICommand<undefined> {
+export class CreateFigureUserEntryCommand implements ICommand<void> {
   date: Date;
   comment?: string;
   figureId: number;
