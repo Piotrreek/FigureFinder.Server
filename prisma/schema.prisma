@@ -73,7 +73,7 @@ model FigureHistory {
   owner           String? // the person who placed the figure
   setupDate       DateTime? @db.Date() // the date when figure has beed placed or will be placed
   validFrom       DateTime @db.Timestamp() // from when this entry was valid
-  validTo         DateTime @db.Timestamp() // from when this entry was not valid
+  validTo         DateTime? @db.Timestamp() // from when this entry was not valid
 
   // relations
   figure          Figure @relation(fields: [figureId], references: [id])
