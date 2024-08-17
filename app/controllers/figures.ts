@@ -1,6 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import { CreateFigureCommandMapper } from "../features/createFigure/CreateFigureCommandMapper";
 import CreateFigureCommandHandler from "../features/createFigure/CreatureFigureCommandHandler";
+import { EditFigureCommandHandler } from "../features/editFigure/EditFigureCommandHandler";
+import { EditFigureCommandMapper } from "../features/editFigure/EditFigureCommandMapper";
+import { FigureWithIdDoesNotExistError } from "../features/editFigure/errors/FigureWithIdDoesNotExistError";
 import { GetFiguresQuery } from "../features/getFigures/GetFiguresQuery";
 import { GetFiguresQueryHandler } from "../features/getFigures/GetFiguresQueryHandler";
 import { AuthenticatedRequest } from "../middleware/requireAuthenticated";
@@ -45,7 +48,26 @@ const getFigures = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+const editFigure = async (req: Request, res: Response, next: NextFunction) => {
+  const userId = (req as AuthenticatedRequest)?.user?.userId;
+  const handler = new EditFigureCommandHandler(+req.params.id, userId);
+  const mapper = new EditFigureCommandMapper();
+
+  try {
+    await handler.handle(mapper.map(req.body));
+    res.status(200).send();
+  } catch (err: unknown) {
+    if (err instanceof FigureWithIdDoesNotExistError) {
+      res.status(400).send({ error: err.message });
+      return;
+    }
+
+    next(err);
+  }
+};
+
 export default {
   createFigure,
   getFigures,
+  editFigure,
 };
