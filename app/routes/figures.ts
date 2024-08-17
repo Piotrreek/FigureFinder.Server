@@ -14,4 +14,6 @@ router.post(
 
 router.get("/", attachUserPayloadMiddleware, FiguresController.getFigures);
 
+router.get("/:id", FiguresController.getFigure);
+
 export default router;
