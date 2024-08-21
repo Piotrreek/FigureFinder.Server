@@ -1,6 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import { CreateFigureCommandMapper } from "../features/createFigure/CreateFigureCommandMapper";
 import CreateFigureCommandHandler from "../features/createFigure/CreatureFigureCommandHandler";
+import { CreateFigureUserEntryCommand } from "../features/createFigureUserEntry/CreateFigureUserEntryCommand";
+import { CreateFigureUserEntryCommandHandler } from "../features/createFigureUserEntry/CreateFigureUserEntryCommandHandler";
+import { FigureUserEntryAlreadyExistsError } from "../features/createFigureUserEntry/errors/FigureUserEntryAlreadyExistsError";
 import { EditFigureCommandHandler } from "../features/editFigure/EditFigureCommandHandler";
 import { EditFigureCommandMapper } from "../features/editFigure/EditFigureCommandMapper";
 import { FigureWithIdDoesNotExistError } from "../features/editFigure/errors/FigureWithIdDoesNotExistError";
@@ -48,6 +51,34 @@ const getFigures = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+const createFigureUserEntry = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const userId = (req as AuthenticatedRequest).user.userId;
+  const handler = new CreateFigureUserEntryCommandHandler(userId);
+  try {
+    const command = new CreateFigureUserEntryCommand(
+      req.body.date,
+      +req.params.id,
+      req.body.figureUserStatusId,
+      req.body.comment
+    );
+
+    await handler.handle(command);
+
+    res.status(201).send();
+  } catch (err: unknown) {
+    if (err instanceof FigureUserEntryAlreadyExistsError) {
+      res.status(400).send({ error: err.message });
+      return;
+    }
+
+    next(err);
+  }
+};
+
 const editFigure = async (req: Request, res: Response, next: NextFunction) => {
   const userId = (req as AuthenticatedRequest)?.user?.userId;
   const handler = new EditFigureCommandHandler(+req.params.id, userId);
@@ -69,5 +100,6 @@ const editFigure = async (req: Request, res: Response, next: NextFunction) => {
 export default {
   createFigure,
   getFigures,
+  createFigureUserEntry,
   editFigure,
 };
