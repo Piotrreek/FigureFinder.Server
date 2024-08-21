@@ -21,4 +21,11 @@ router.post(
   FiguresController.createFigureUserEntry
 );
 
+router.patch(
+  "/:id",
+  express.json(),
+  requireAuthenticatedUserMiddleware,
+  FiguresController.editFigure
+);
+
 export default router;
