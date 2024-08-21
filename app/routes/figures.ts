@@ -14,6 +14,20 @@ router.post(
 
 router.get("/", attachUserPayloadMiddleware, FiguresController.getFigures);
 
+router.post(
+  "/:id/entries",
+  express.json(),
+  requireAuthenticatedUserMiddleware,
+  FiguresController.createFigureUserEntry
+);
+
+router.patch(
+  "/:id",
+  express.json(),
+  requireAuthenticatedUserMiddleware,
+  FiguresController.editFigure
+);
+
 router.get("/:id", FiguresController.getFigure);
 
 export default router;
