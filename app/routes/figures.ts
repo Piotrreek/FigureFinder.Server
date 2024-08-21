@@ -28,4 +28,6 @@ router.patch(
   FiguresController.editFigure
 );
 
+router.get("/:id", FiguresController.getFigure);
+
 export default router;

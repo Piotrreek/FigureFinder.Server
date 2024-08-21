@@ -7,6 +7,9 @@ import { FigureUserEntryAlreadyExistsError } from "../features/createFigureUserE
 import { EditFigureCommandHandler } from "../features/editFigure/EditFigureCommandHandler";
 import { EditFigureCommandMapper } from "../features/editFigure/EditFigureCommandMapper";
 import { FigureWithIdDoesNotExistError } from "../features/editFigure/errors/FigureWithIdDoesNotExistError";
+import { GetFigureQuery } from "../features/getFigure/GetFigureQuery";
+import { GetFigureQueryHandler } from "../features/getFigure/GetFigureQueryHandler";
+import { FigureNotFoundError } from "../features/getFigure/errors/FigureNotFoundError";
 import { GetFiguresQuery } from "../features/getFigures/GetFiguresQuery";
 import { GetFiguresQueryHandler } from "../features/getFigures/GetFiguresQueryHandler";
 import { AuthenticatedRequest } from "../middleware/requireAuthenticated";
@@ -97,9 +100,30 @@ const editFigure = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+const getFigure = async (req: Request, res: Response, next: NextFunction) => {
+  const handler = new GetFigureQueryHandler();
+  try {
+    const getFigureQuery: GetFigureQuery = {
+      figureId: +req.params.id,
+    };
+
+    const result = await handler.handle(getFigureQuery);
+
+    res.status(200).json(result);
+  } catch (err: unknown) {
+    if (err instanceof FigureNotFoundError) {
+      res.status(404).send();
+      return;
+    }
+
+    next(err);
+  }
+};
+
 export default {
   createFigure,
   getFigures,
   createFigureUserEntry,
   editFigure,
+  getFigure,
 };
