@@ -140,7 +140,6 @@ const importFigures = async (
 
     res.status(200).send();
   } catch (err: unknown) {
-    console.log(err);
     next(err);
   }
 };
