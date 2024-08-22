@@ -1,6 +1,12 @@
 import { NextFunction, Request, Response } from "express";
 import { ValidationError } from "yup";
 import { transformYupErrorsIntoObject } from "../../utils/transformYupErrorsIntoObject";
+import { FigureFinderError } from "../common/FigureFinderError";
+
+export interface Error {
+  code: string;
+  message: string;
+}
 
 const errorHandlingMiddleware = (
   err: Error,
@@ -10,11 +16,21 @@ const errorHandlingMiddleware = (
 ) => {
   if (err instanceof ValidationError) {
     const validationErrors = transformYupErrorsIntoObject(err);
-    res.status(400).json(validationErrors);
+    console.log(validationErrors);
+    res.status(400).json({ errors: validationErrors });
     return;
   }
 
-  res.status(500).send("Something went wrong");
+  if (err instanceof FigureFinderError) {
+    res
+      .status(err.status)
+      .json({ errors: [{ code: err.code, message: err.message }] });
+      return;
+  }
+
+  res
+    .status(500)
+    .json({ errors: [{ code: "error", message: "Something went wrong" }] });
 };
 
 export default errorHandlingMiddleware;

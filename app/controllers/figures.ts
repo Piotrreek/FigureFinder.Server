@@ -3,13 +3,10 @@ import { CreateFigureCommandMapper } from "../features/createFigure/CreateFigure
 import CreateFigureCommandHandler from "../features/createFigure/CreatureFigureCommandHandler";
 import { CreateFigureUserEntryCommand } from "../features/createFigureUserEntry/CreateFigureUserEntryCommand";
 import { CreateFigureUserEntryCommandHandler } from "../features/createFigureUserEntry/CreateFigureUserEntryCommandHandler";
-import { FigureUserEntryAlreadyExistsError } from "../features/createFigureUserEntry/errors/FigureUserEntryAlreadyExistsError";
 import { EditFigureCommandHandler } from "../features/editFigure/EditFigureCommandHandler";
 import { EditFigureCommandMapper } from "../features/editFigure/EditFigureCommandMapper";
-import { FigureWithIdDoesNotExistError } from "../features/editFigure/errors/FigureWithIdDoesNotExistError";
 import { GetFigureQuery } from "../features/getFigure/GetFigureQuery";
 import { GetFigureQueryHandler } from "../features/getFigure/GetFigureQueryHandler";
-import { FigureNotFoundError } from "../features/getFigure/errors/FigureNotFoundError";
 import { GetFiguresQuery } from "../features/getFigures/GetFiguresQuery";
 import { GetFiguresQueryHandler } from "../features/getFigures/GetFiguresQueryHandler";
 import { AuthenticatedRequest } from "../middleware/requireAuthenticated";
@@ -73,11 +70,6 @@ const createFigureUserEntry = async (
 
     res.status(201).send();
   } catch (err: unknown) {
-    if (err instanceof FigureUserEntryAlreadyExistsError) {
-      res.status(400).send({ error: err.message });
-      return;
-    }
-
     next(err);
   }
 };
@@ -91,11 +83,6 @@ const editFigure = async (req: Request, res: Response, next: NextFunction) => {
     await handler.handle(mapper.map(req.body));
     res.status(200).send();
   } catch (err: unknown) {
-    if (err instanceof FigureWithIdDoesNotExistError) {
-      res.status(400).send({ error: err.message });
-      return;
-    }
-
     next(err);
   }
 };
@@ -111,11 +98,6 @@ const getFigure = async (req: Request, res: Response, next: NextFunction) => {
 
     res.status(200).json(result);
   } catch (err: unknown) {
-    if (err instanceof FigureNotFoundError) {
-      res.status(404).send();
-      return;
-    }
-
     next(err);
   }
 };
