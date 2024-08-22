@@ -1,5 +1,7 @@
-export class InvalidCredentialsError extends Error {
-  constructor() {
-    super("Invalid email or password");
-  }
+import { FigureFinderError } from "../../../common/FigureFinderError";
+
+export class InvalidCredentialsError extends FigureFinderError {
+  status: number = 401;
+  message: string = "Invalid email or password";
+  code: string = "InvalidCredentials";
 }

@@ -1,12 +1,13 @@
 import { ValidationError } from "yup";
+import { Error } from "../app/middleware/error";
 
 export const transformYupErrorsIntoObject = (
   errors: ValidationError
-): Record<string, string> => {
-  const validationErrors: Record<string, string> = {};
+): Error[] => {
+  const validationErrors: Error[] = [];
   errors.inner.forEach((error: any) => {
     if (error.path !== undefined) {
-      validationErrors[error.path] = error.errors[0];
+      validationErrors.push({ code: error.path, message: error.errors[0] });
     }
   });
 
