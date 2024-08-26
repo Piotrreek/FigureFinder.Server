@@ -30,4 +30,10 @@ router.patch(
 
 router.get("/:id", FiguresController.getFigure);
 
+router.get(
+  "/users/:id/entries/count",
+  requireAuthenticatedUserMiddleware,
+  FiguresController.getUserEntries
+);
+
 export default router;
