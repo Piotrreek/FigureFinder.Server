@@ -30,4 +30,6 @@ router.patch(
 
 router.get("/:id", FiguresController.getFigure);
 
+router.get("/users/:id/entries", FiguresController.getUserEntries);
+
 export default router;

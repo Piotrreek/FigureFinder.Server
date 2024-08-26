@@ -9,6 +9,8 @@ import { GetFigureQuery } from "../features/getFigure/GetFigureQuery";
 import { GetFigureQueryHandler } from "../features/getFigure/GetFigureQueryHandler";
 import { GetFiguresQuery } from "../features/getFigures/GetFiguresQuery";
 import { GetFiguresQueryHandler } from "../features/getFigures/GetFiguresQueryHandler";
+import { GetUserEntriesQuery } from "../features/getUserEntries/GetUserEntriesQuery";
+import { GetUserEntriesQueryHandler } from "../features/getUserEntries/GetUserEntriesQueryHandler";
 import { AuthenticatedRequest } from "../middleware/requireAuthenticated";
 
 const createFigure = async (
@@ -102,10 +104,32 @@ const getFigure = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+const getUserEntries = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const handler = new GetUserEntriesQueryHandler();
+  try {
+    const query: GetUserEntriesQuery = {
+      userId: +req.params.id,
+      pageNumber: +(req.query.pageNumber ?? 1),
+      pageSize: +(req.query.pageSize ?? 10),
+    };
+
+    const result = await handler.handle(query);
+
+    res.status(200).json(result);
+  } catch (err: unknown) {
+    next(err);
+  }
+};
+
 export default {
   createFigure,
   getFigures,
   createFigureUserEntry,
   editFigure,
   getFigure,
+  getUserEntries,
 };
