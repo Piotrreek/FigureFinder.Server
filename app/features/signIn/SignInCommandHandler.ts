@@ -34,6 +34,7 @@ class SignInCommandHandler
         password: true,
         id: true,
         emailConfirmed: true,
+        blocked: true,
       },
     });
 
@@ -52,7 +53,8 @@ class SignInCommandHandler
     const accessToken = this.jwtService.generateAccessToken(
       user.id,
       user.emailConfirmed,
-      user.role.name
+      user.role.name,
+      user.blocked
     );
 
     return { accessToken: accessToken };

@@ -2,6 +2,7 @@ import express from "express";
 import multer from "multer";
 import FiguresController from "../controllers/figures";
 import attachUserPayloadMiddleware from "../middleware/attachUserPayload";
+import blockBlockedUserMiddleware from "../middleware/blockBlockedUser";
 import requireAdminRoleMiddleware from "../middleware/requireAdminRole";
 import requireAuthenticatedUserMiddleware from "../middleware/requireAuthenticated";
 
@@ -12,6 +13,7 @@ router.post(
   "/",
   express.json(),
   requireAuthenticatedUserMiddleware,
+  blockBlockedUserMiddleware,
   FiguresController.createFigure
 );
 
@@ -21,6 +23,7 @@ router.post(
   "/:id/entries",
   express.json(),
   requireAuthenticatedUserMiddleware,
+  blockBlockedUserMiddleware,
   FiguresController.createFigureUserEntry
 );
 
@@ -28,6 +31,7 @@ router.patch(
   "/:id",
   express.json(),
   requireAuthenticatedUserMiddleware,
+  blockBlockedUserMiddleware,
   FiguresController.editFigure
 );
 
