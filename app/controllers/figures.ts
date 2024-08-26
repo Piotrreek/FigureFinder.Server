@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import fs from "fs";
 import { CreateFigureCommandMapper } from "../features/createFigure/CreateFigureCommandMapper";
 import CreateFigureCommandHandler from "../features/createFigure/CreatureFigureCommandHandler";
 import { CreateFigureUserEntryCommand } from "../features/createFigureUserEntry/CreateFigureUserEntryCommand";
@@ -9,6 +10,8 @@ import { GetFigureQuery } from "../features/getFigure/GetFigureQuery";
 import { GetFigureQueryHandler } from "../features/getFigure/GetFigureQueryHandler";
 import { GetFiguresQuery } from "../features/getFigures/GetFiguresQuery";
 import { GetFiguresQueryHandler } from "../features/getFigures/GetFiguresQueryHandler";
+import { ImportFiguresCommand } from "../features/importFigures/ImportFiguresCommand";
+import { ImportFiguresCommandHandler } from "../features/importFigures/ImportFiguresCommandHandler";
 import { GetUserEntriesCountQuery } from "../features/getUserEntriesCount/GetUserEntriesCountQuery";
 import { GetUserEntriesCountQueryHandler } from "../features/getUserEntriesCount/GetUserEntriesCountQueryHandler";
 import { AuthenticatedRequest } from "../middleware/requireAuthenticated";
@@ -104,6 +107,31 @@ const getFigure = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+const importFigures = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const authenticatedRequest = req as AuthenticatedRequest;
+  const handler = new ImportFiguresCommandHandler(
+    authenticatedRequest.user.userId
+  );
+  try {
+    const fileRequest = req as FileRequest;
+    const filePath = fileRequest.file.path;
+    const fileContent = fs.readFileSync(filePath, "utf-8");
+    await handler.handle(new ImportFiguresCommand(fileContent));
+
+    res.status(200).send();
+  } catch (err: unknown) {
+    next(err);
+  }
+};
+
+interface FileRequest extends Request {
+  file: any;
+}
+
 const getUserEntries = async (
   req: Request,
   res: Response,
@@ -129,5 +157,6 @@ export default {
   createFigureUserEntry,
   editFigure,
   getFigure,
+  importFigures,
   getUserEntries
 };
