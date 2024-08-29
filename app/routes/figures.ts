@@ -40,4 +40,10 @@ router.post(
   FiguresController.importFigures
 );
 
+router.get(
+  "/users/:id/entries/count",
+  requireAuthenticatedUserMiddleware,
+  FiguresController.getUserEntries
+);
+
 export default router;

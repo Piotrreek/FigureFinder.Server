@@ -12,6 +12,8 @@ import { GetFiguresQuery } from "../features/getFigures/GetFiguresQuery";
 import { GetFiguresQueryHandler } from "../features/getFigures/GetFiguresQueryHandler";
 import { ImportFiguresCommand } from "../features/importFigures/ImportFiguresCommand";
 import { ImportFiguresCommandHandler } from "../features/importFigures/ImportFiguresCommandHandler";
+import { GetUserEntriesCountQuery } from "../features/getUserEntriesCount/GetUserEntriesCountQuery";
+import { GetUserEntriesCountQueryHandler } from "../features/getUserEntriesCount/GetUserEntriesCountQueryHandler";
 import { AuthenticatedRequest } from "../middleware/requireAuthenticated";
 
 const createFigure = async (
@@ -130,6 +132,25 @@ interface FileRequest extends Request {
   file: any;
 }
 
+const getUserEntries = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const handler = new GetUserEntriesCountQueryHandler();
+  try {
+    const getUserEntriesCountQuery: GetUserEntriesCountQuery = {
+      userId: +req.params.id,
+    };
+
+    const result = await handler.handle(getUserEntriesCountQuery);
+
+    res.status(200).json(result);
+  } catch (err: unknown) {
+    next(err);
+  }
+};
+
 export default {
   createFigure,
   getFigures,
@@ -137,4 +158,5 @@ export default {
   editFigure,
   getFigure,
   importFigures,
+  getUserEntries
 };
