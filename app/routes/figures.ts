@@ -43,7 +43,7 @@ router.post(
 router.get(
   "/users/:id/entries/count",
   requireAuthenticatedUserMiddleware,
-  FiguresController.getUserEntries
+  FiguresController.getUserEntriesCount
 );
 
 router.get("/users/:id/entries", FiguresController.getUserEntries);
