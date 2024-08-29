@@ -10,10 +10,12 @@ import { GetFigureQuery } from "../features/getFigure/GetFigureQuery";
 import { GetFigureQueryHandler } from "../features/getFigure/GetFigureQueryHandler";
 import { GetFiguresQuery } from "../features/getFigures/GetFiguresQuery";
 import { GetFiguresQueryHandler } from "../features/getFigures/GetFiguresQueryHandler";
-import { ImportFiguresCommand } from "../features/importFigures/ImportFiguresCommand";
-import { ImportFiguresCommandHandler } from "../features/importFigures/ImportFiguresCommandHandler";
+import { GetUserEntriesQuery } from "../features/getUserEntries/GetUserEntriesQuery";
+import { GetUserEntriesQueryHandler } from "../features/getUserEntries/GetUserEntriesQueryHandler";
 import { GetUserEntriesCountQuery } from "../features/getUserEntriesCount/GetUserEntriesCountQuery";
 import { GetUserEntriesCountQueryHandler } from "../features/getUserEntriesCount/GetUserEntriesCountQueryHandler";
+import { ImportFiguresCommand } from "../features/importFigures/ImportFiguresCommand";
+import { ImportFiguresCommandHandler } from "../features/importFigures/ImportFiguresCommandHandler";
 import { AuthenticatedRequest } from "../middleware/requireAuthenticated";
 
 const createFigure = async (
@@ -132,7 +134,7 @@ interface FileRequest extends Request {
   file: any;
 }
 
-const getUserEntries = async (
+const getUserEntriesCount = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -151,6 +153,27 @@ const getUserEntries = async (
   }
 };
 
+const getUserEntries = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const handler = new GetUserEntriesQueryHandler();
+  try {
+    const query: GetUserEntriesQuery = {
+      userId: +req.params.id,
+      pageNumber: +(req.query.pageNumber ?? 1),
+      pageSize: +(req.query.pageSize ?? 10),
+    };
+
+    const result = await handler.handle(query);
+
+    res.status(200).json(result);
+  } catch (err: unknown) {
+    next(err);
+  }
+};
+
 export default {
   createFigure,
   getFigures,
@@ -158,5 +181,6 @@ export default {
   editFigure,
   getFigure,
   importFigures,
-  getUserEntries
+  getUserEntriesCount,
+  getUserEntries,
 };
