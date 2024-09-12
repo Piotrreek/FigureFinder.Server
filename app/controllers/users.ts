@@ -1,4 +1,6 @@
 import { NextFunction, Request, Response } from "express";
+import { BlockUserCommand } from "../features/blockUser/BlockUserCommand";
+import { BlockUserCommandHandler } from "../features/blockUser/BlockUserCommandHandler";
 import CreateUserCommandHandler from "../features/createUser/CreateUserCommandHandler";
 import { CreateUserCommandMapper } from "../features/createUser/CreateUserCommandMapper";
 import SignInCommandHandler from "../features/signIn/SignInCommandHandler";
@@ -26,7 +28,21 @@ const signIn = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+const block = async (req: Request, res: Response, next: NextFunction) => {
+  const handler = new BlockUserCommandHandler();
+  try {
+    const command: BlockUserCommand = {
+      userId: +req.params.id,
+    };
+    await handler.handle(command);
+    res.status(200).send();
+  } catch (err: unknown) {
+    next(err);
+  }
+};
+
 export default {
   createUser,
   signIn,
+  block,
 };

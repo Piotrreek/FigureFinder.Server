@@ -4,6 +4,7 @@ export interface JwtPayload {
   userId: number;
   emailConfirmed: boolean;
   role: string;
+  blocked: boolean;
 }
 
 export class JwtService {
@@ -12,12 +13,14 @@ export class JwtService {
   public generateAccessToken = (
     userId: number,
     emailConfirmed: boolean,
-    role: string
+    role: string,
+    blocked: boolean
   ): string => {
     const payload: JwtPayload = {
       userId: userId,
       emailConfirmed: emailConfirmed,
       role: role,
+      blocked: blocked,
     };
 
     const token = jwt.sign(payload, this.key, {
